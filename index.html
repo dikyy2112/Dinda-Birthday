@@ -8,30 +8,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&family=Playfair+Display:italic,wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg: #fdfaf7;
-            --accent: #6c1d1d;
-            --glass: rgba(255, 255, 255, 0.4);
-            --text: #2a1f14;
-        }
+        /* --- Latar Belakang Baru --- */
+body {
+    background: #fdfaf7;
+    /* Memberi tekstur warna yang lebih dalam */
+    background: radial-gradient(circle at center, #fdfaf7 0%, #faeede 100%);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow: hidden;
+    position: relative;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+/* Dekorasi elemen mengambang (Floating Decor) */
+.bg-decor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
 
-        body {
-            background: linear-gradient(135deg, var(--bg) 0%, #faeede 100%);
-            color: var(--text);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow: hidden;
-        }
+.item-decor {
+    position: absolute;
+    opacity: 0.15; /* Transparan agar tidak mengganggu teks */
+    filter: sepia(0.3); /* Memberikan kesan vintage/warm */
+    animation: float 6s ease-in-out infinite;
+}
 
+/* Animasi mengambang */
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+/* Mengatur posisi masing-masing boneka dan bunga */
+.item-decor:nth-child(1) { top: 10%; left: 5%; font-size: 80px; animation-delay: 0s; }
+.item-decor:nth-child(2) { top: 70%; left: 10%; font-size: 100px; animation-delay: 1s; }
+.item-decor:nth-child(3) { top: 20%; right: 10%; font-size: 90px; animation-delay: 2s; }
+.item-decor:nth-child(4) { top: 80%; right: 5%; font-size: 70px; animation-delay: 1.5s; }
+.item-decor:nth-child(5) { top: 40%; left: 40%; font-size: 50px; opacity: 0.08; }
+.item-decor:nth-child(6) { top: 50%; right: 30%; font-size: 60px; opacity: 0.08; }
+
+/* Membuat glass card lebih kontras agar teks tetap tajam */
+.glass-card {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 1);
+}
         /* --- Intro Section --- */
         .intro-page {
-            position: fixed; inset: 0;
-            background: var(--bg);
+            position: fixed; 
+            inset: 0;
+            background: #fdfaf7; /* Samakan dengan warna bg utama */
             z-index: 1000;
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            /* Transisi geser ke atas */
+            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1); 
         }
+        
 
         .intro-container {
             border: 1px solid rgba(108, 29, 29, 0.1);
@@ -42,8 +80,9 @@
             background: white;
             box-shadow: 0 10px 50px rgba(0,0,0,0.02);
         }
-
-        .intro-page.hidden { transform: translateY(-100%); pointer-events: none; }
+        .intro-page.hidden { 
+            transform: translateY(-100%); 
+        }
 
         .intro-img {
             width: 180px; height: 180px;
@@ -60,20 +99,24 @@
         }
 
         /* --- Button Style --- */
+/* --- Perbaikan Button Style --- */
         .btn {
-            background: var(--accent);
-            color: white;
+            background-color: #6c1d1d !important; /* Memaksa warna maroon keluar */
+            color: #ffffff !important;           /* Memaksa teks jadi putih */
             padding: 14px 35px;
             border-radius: 50px;
             border: none;
             cursor: pointer;
-            font-family: inherit;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
             letter-spacing: 1px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(108, 29, 29, 0.2);
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 20px rgba(108, 29, 29, 0.3);
             position: relative;
-            z-index: 1;
+            z-index: 10; /* Pastikan di atas dekorasi */
         }
 
         .btn:hover {
@@ -90,13 +133,16 @@
             100% { box-shadow: 0 0 0 0 rgba(108, 29, 29, 0); }
         }
 
-        /* --- Main Content --- */
         .main-content {
             height: 100vh;
             overflow-y: auto;
             scroll-snap-type: y mandatory;
-            display: none;
-            scroll-behavior: smooth;
+            opacity: 0; /* Mulai dari transparan */
+            transition: opacity 1s ease-in;
+            display: block !important; /* Jangan pakai display none */
+        }
+        .main-content.visible {
+            opacity: 1; /* Tampilkan saat sudah siap */
         }
 
         section {
@@ -294,6 +340,14 @@
     </nav>
 </div>
 
+<div class="bg-decor">
+    <div class="item-decor" style="font-size: 80px;">🌸</div>
+    <div class="item-decor" style="font-size: 100px;">🧸</div>
+    <div class="item-decor" style="font-size: 90px;">🌼</div>
+    <div class="item-decor" style="font-size: 70px;">❤️</div>
+    <div class="item-decor" style="font-size: 50px;">🌺</div>
+    <div class="item-decor" style="font-size: 60px;">🧸</div>
+
 <audio id="bgm" loop src="Sempurna (Acoustic Version).mp3"></audio>
 
 <script>
@@ -302,12 +356,20 @@
     const main = document.getElementById('main');
     const audio = document.getElementById('bgm');
 
-    openBtn.addEventListener('click', () => {
-        intro.classList.add('hidden');
-        main.style.display = 'block';
-        audio.play().catch(() => console.log("Musik aktif"));
-        startPetals();
-    });
+openBtn.addEventListener('click', () => {
+    // 1. Tambahkan class hidden untuk memicu animasi CSS translateY(-100%)
+    intro.classList.add('hidden');
+    
+    // 2. Tambahkan class visible pada main content
+    main.classList.add('visible');
+
+    // 3. Jalankan audio dan kelopak bunga
+    audio.play().catch(() => console.log("Musik aktif"));
+    startPetals();
+    
+    // 4. Aktifkan scroll pada body setelah intro hilang (opsional)
+    document.body.style.overflow = 'auto'; 
+});
 
     document.getElementById('play-music').addEventListener('click', function() {
         if(audio.paused) {
