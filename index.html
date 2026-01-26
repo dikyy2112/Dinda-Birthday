@@ -133,14 +133,16 @@ body {
             100% { box-shadow: 0 0 0 0 rgba(108, 29, 29, 0); }
         }
 
-        .main-content {
-            height: 100vh;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            opacity: 0; /* Mulai dari transparan */
-            transition: opacity 1s ease-in;
-            display: block !important; /* Jangan pakai display none */
-        }
+    .main-content {
+        height: 100vh;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth; /* Tambahkan ini agar klik nav jadi smooth */
+        opacity: 0;
+        transition: opacity 1s ease-in;
+        display: block !important;
+        
+        }        
         .main-content.visible {
             opacity: 1; /* Tampilkan saat sudah siap */
         }
@@ -167,6 +169,18 @@ body {
             align-items: center;
             transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
+        /* Keadaan awal kartu (tersembunyi & sedikit di bawah) */
+.glass-card {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Keadaan saat kartu aktif (muncul) */
+.glass-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
         /* --- GALLERY GRID SYSTEM --- */
 /* --- GALLERY GRID SYSTEM (Susunan Tetap Sama) --- */
@@ -282,6 +296,63 @@ body {
             .img-frame { height: 250px; }
             nav { width: 90%; justify-content: center; gap: 15px; }
         }
+        .cursor {
+    display: inline-block;
+    width: 2px;
+    background-color: #6c1d1d;
+    margin-left: 2px;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+#secret-trigger {
+    margin-top: 50px;
+    display: inline-block;
+    font-size: 0.65rem; /* Lebih kecil agar tidak mengganggu */
+    color: #5a4b3c;
+    opacity: 0.3; /* Sangat samar di awal */
+    letter-spacing: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.8s ease;
+    font-weight: 300;
+}
+
+/* Garis bawah tipis yang elegan */
+#secret-trigger::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -5px;
+    left: 50%;
+    background: #6c1d1d;
+    transition: all 0.5s ease;
+    transform: translateX(-50%);
+}
+
+/* Saat disentuh, opacity naik sedikit dan garis memanjang */
+#secret-trigger:hover {
+    opacity: 0.8;
+    letter-spacing: 6px;
+}
+
+#secret-trigger:hover::after {
+    width: 40%; /* Garis muncul secukupnya, tidak penuh */
+}
+@keyframes softBreath {
+    0% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.02); }
+    100% { opacity: 0.2; transform: scale(1); }
+}
+
+#secret-trigger {
+    animation: softBreath 4s infinite ease-in-out;
+}
+        
     </style>
 </head>
 <body>
@@ -340,17 +411,23 @@ body {
         </div>
     </section>
 
-    <section id="wish">
-        <div class="glass-card" style="grid-template-columns: 1fr; text-align: center;">
-            <p style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-style: italic; color: var(--accent); line-height: 1.6;">
-                "Selamat menginjak usia dua puluh satu. Ini adalah bab di mana kamu bukan lagi sekadar mencari jati diri, melainkan mulai menciptakannya.
-                <br>Semoga setiap langkahmu membawa harmoni, dan setiap lelahmu selalu menemukan ruang teduh untuk berpulang. Ada kekuatan yang tenang dalam caramu tetap bersinar meski dunia terkadang redup—sebuah keteguhan yang akan selalu istimewa untuk disaksikan.</br>
-                <br>Teruslah tumbuh dengan caramu sendiri, dan semoga setiap lelahmu selalu berujung pada bahagia yang bermakna."</br>
-            </p>
-            <p style="margin-top: 40px; font-size: 0.7rem; opacity: 0.5; letter-spacing: 3px;">SECRET</p>
+<section id="wish">
+    <div class="glass-card" style="grid-template-columns: 1fr; text-align: center;">
+        <div id="day-counter-wrapper" style="margin-bottom: 20px;">
+            <h3 style="font-size: 1rem; opacity: 0.7; font-weight: 400;">Tepat hari ini,</h3>
+            <div id="day-number" style="font-size: 3.5rem; font-weight: 700; color: #6c1d1d; font-family: 'Playfair Display', serif;">0</div>
+            <h3 style="font-size: 1rem; opacity: 0.7; font-weight: 400;">hari kamu telah menyinari dunia.</h3>
         </div>
-    </section>
 
+        <p id="typing-text" style="font-family: 'Playfair Display', serif; font-size: 1.4rem; font-style: italic; color: #5a4b3c; line-height: 1.6; min-height: 150px;"></p>
+        
+<p id="secret-trigger" style="margin-top: 40px; font-size: 0.7rem; opacity: 0.4; letter-spacing: 3px; cursor: pointer; transition: 0.5s;">S E C R E T</p>
+
+<p id="final-message" style="margin-top: 20px; font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #6c1d1d; opacity: 0; transition: opacity 2s ease; font-weight: 700;">
+    "I will love you forever and always❤️"
+</p>
+    </div>
+</section>
     <nav>
         <a href="#home" class="nav-link active">Home</a>
         <a href="#memories" class="nav-link">Tumbuh</a>
@@ -389,7 +466,8 @@ openBtn.addEventListener('click', () => {
     startPetals();
     
     // 4. Aktifkan scroll pada body setelah intro hilang (opsional)
-    document.body.style.overflow = 'auto'; 
+    document.body.style.overflow = 'hidden'; // Pastikan body tetap hidden agar tidak bergeser
+    main.focus(); // Fokus pada main untuk mengaktifkan scroll di dalamnya
 });
 
     document.getElementById('play-music').addEventListener('click', function() {
@@ -462,6 +540,136 @@ function startPetals() {
             }
         });
     });
+    // Fungsi untuk memicu animasi saat elemen muncul di layar
+const observerOptions = {
+    threshold: 0.2 // Animasi jalan jika 20% kartu sudah terlihat
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+        } else {
+            // Hapus baris di bawah jika ingin animasi hanya sekali saja
+            entry.target.classList.remove('is-visible'); 
+        }
+    });
+}, observerOptions);
+
+// Daftarkan semua glass-card ke observer
+document.querySelectorAll('.glass-card').forEach(card => {
+    observer.observe(card);
+});
+
+// Perbaikan fungsi scroll nav agar lebih akurat
+main.addEventListener('scroll', () => {
+    let current = "";
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (main.scrollTop >= (sectionTop - sectionHeight / 3)) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').slice(1) === current) {
+            link.classList.add('active');
+        }
+    });
+});
+// --- KONFIGURASI ---
+const birthDate = new Date('2005-03-22'); // SESUAIKAN TAHUN LAHIR DINDA DI SINI (YYYY-MM-DD)
+const message = "Selamat menginjak usia dua puluh satu Dinda. Ini adalah bab di mana kamu bukan lagi sekadar mencari jati diri, melainkan mulai menciptakannya. Semoga setiap langkahmu membawa harmoni, dan setiap lelahmu selalu menemukan ruang teduh untuk berpulang. Teruslah tumbuh dengan caramu sendiri, dan semoga setiap lelahmu selalu berujung pada bahagia yang bermakna";
+
+let hasStarted = false;
+
+// Fungsi hitung selisih hari
+function calculateDays() {
+    const today = new Date();
+    const diffTime = Math.abs(today - birthDate);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+// Fungsi Typing Effect
+function typeWriter(text, i, fnCallback) {
+    if (i < text.length) {
+        document.getElementById("typing-text").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true" class="cursor">|</span>';
+        setTimeout(function() {
+            typeWriter(text, i + 1, fnCallback)
+        }, 50); // Kecepatan ngetik (ms)
+    } else if (typeof fnCallback == 'function') {
+        setTimeout(fnCallback, 700);
+    }
+}
+
+// Fungsi Animasi Angka
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            // Setelah angka selesai, mulai ngetik
+            typeWriter(message, 0);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+// Trigger saat section "Wish" terlihat
+const wishObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !hasStarted) {
+            hasStarted = true;
+            const totalDays = calculateDays();
+            const displayObj = document.getElementById("day-number");
+            animateValue(displayObj, 0, totalDays, 2000); // Animasi angka selama 2 detik
+        }
+    });
+}, { threshold: 0.5 });
+
+wishObserver.observe(document.getElementById('wish'));
+
+ 
+ 
+// Gunakan sistem tahap (step) agar tidak error karena spasi teks
+let secretStep = 0;
+
+const secretBtn = document.getElementById('secret-trigger');
+const finalMsg = document.getElementById('final-message');
+
+secretBtn.addEventListener('click', function() {
+    if (secretStep === 0) {
+        // TAHAP 1: Berubah jadi TOP SECRET
+        this.style.opacity = '0';
+        
+        setTimeout(() => {
+            this.innerText = "T O P  S E C R E T";
+            this.style.opacity = '0.7';
+            this.style.color = '#6c1d1d';
+            this.style.letterSpacing = '5px';
+            secretStep = 1; // Tandai sudah masuk tahap 1
+        }, 500);
+
+    } else if (secretStep === 1) {
+        // TAHAP 2: Munculkan pesan cinta
+        this.style.opacity = '0';
+        this.style.pointerEvents = 'none'; // Matikan klik agar tidak klik berkali-kali
+        
+        setTimeout(() => {
+            // Hilangkan tulisan TOP SECRET total agar rapi
+            this.style.display = 'none'; 
+            // Munculkan kalimat "I will love you..."
+            finalMsg.style.opacity = '1';
+        }, 500);
+    }
+});
+
 </script>
 
 </body>
